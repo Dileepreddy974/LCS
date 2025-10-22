@@ -2,31 +2,52 @@
 {% block title %}Profile • Luxury Car Rental Service{% endblock %}
 
 {% block content %}
-  <div class="card">
-    <h2 class="animated-title">Your Profile</h2>
-    
-    <div class="profile-header">
-      {% if user.profile_image %}
-        <img src="{{ url_for('static', filename=user.profile_image) }}" alt="{{ user.name }}" class="profile-image">
-      {% else %}
-        <div class="profile-image-placeholder">
-          <span>{{ user.name[0] }}</span>
+  <div class="profile-container">
+    <div class="profile-card">
+      <h2 class="animated-title">Your Profile</h2>
+      
+      <div class="profile-header">
+        {% if user.profile_image %}
+          <img src="{{ url_for('static', filename=user.profile_image) }}" alt="{{ user.name }}" class="profile-image">
+        {% else %}
+          <div class="profile-image-placeholder">
+            <span>{{ user.name[0] }}</span>
+          </div>
+        {% endif %}
+        <div class="profile-info">
+          <h3>{{ user.name }}</h3>
+          <p>{{ user.email }}</p>
+          <p>Member since {{ user.created_at.strftime('%B %d, %Y') }}</p>
         </div>
-      {% endif %}
-      <div class="profile-info">
-        <h3>{{ user.name }}</h3>
-        <p>{{ user.email }}</p>
-        <p>Member since {{ user.created_at.strftime('%B %d, %Y') }}</p>
       </div>
-    </div>
-    
-    <div class="profile-actions">
-      <a href="/" class="btn-secondary" style="text-decoration:none; padding:10px 12px; border-radius:10px;">Back to Home</a>
-      <a href="/logout" class="btn-secondary" style="text-decoration:none; padding:10px 12px; border-radius:10px;">Logout</a>
+      
+      <div class="profile-actions">
+        <a href="/" class="btn btn-secondary">Back to Home</a>
+        <a href="/logout" class="btn btn-outline">Logout</a>
+      </div>
     </div>
   </div>
   
   <style>
+    .profile-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 70vh;
+      padding: 20px;
+    }
+    
+    .profile-card {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      width: 100%;
+      max-width: 500px;
+    }
+    
     .profile-header {
       display: flex;
       align-items: center;
@@ -53,22 +74,58 @@
       font-size: 2.5rem;
       font-weight: bold;
       border: 3px solid rgba(255, 255, 255, 0.2);
+      color: white;
     }
     
     .profile-info h3 {
       margin: 0 0 10px 0;
       font-size: 1.5rem;
+      color: #333;
     }
     
     .profile-info p {
       margin: 5px 0;
-      color: #ccc;
+      color: #666;
     }
     
     .profile-actions {
       display: flex;
       gap: 15px;
       margin-top: 20px;
+    }
+    
+    .btn {
+      flex: 1;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      min-width: 120px;
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(145deg, #6a6a6a, #3d3d3d);
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(106, 106, 106, 0.3);
+    }
+    
+    .btn-outline {
+      background: transparent;
+      color: #666;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-outline:hover {
+      background: rgba(0, 0, 0, 0.03);
     }
   </style>
 {% endblock %}
