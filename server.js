@@ -36,8 +36,8 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "login.html"));
 });
 
-app.get("/register", (req, res) => {
-  res.sendFile(path.join(__dirname, "register.html"));
+app.get("/login", (req, res) => {
+  res.sendFile(path.join(__dirname, "login.html"));
 });
 
 app.post("/login", (req, res) => {
@@ -62,13 +62,8 @@ app.post("/login", (req, res) => {
   });
 });
 
-app.get("/dashboard", (req, res) => {
-  // Check if user is logged in
-  if (!req.session.user) {
-    return res.redirect("/?error=Please log in to access the dashboard");
-  }
-  
-  res.sendFile(path.join(__dirname, "dashboard.html"));
+app.get("/register", (req, res) => {
+  res.sendFile(path.join(__dirname, "register.html"));
 });
 
 app.post("/register", (req, res) => {
@@ -91,6 +86,83 @@ app.post("/register", (req, res) => {
   req.session.save(() => {
     res.redirect("/dashboard?success=Account created successfully!");
   });
+});
+
+app.get("/dashboard", (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect("/?error=Please log in to access the dashboard");
+  }
+  
+  res.sendFile(path.join(__dirname, "dashboard.html"));
+});
+
+app.get("/list", (req, res) => {
+  res.sendFile(path.join(__dirname, "list.html"));
+});
+
+app.get("/borrow", (req, res) => {
+  res.sendFile(path.join(__dirname, "borrow.html"));
+});
+
+app.post("/borrow", (req, res) => {
+  const { name, car } = req.body;
+  
+  // Simple validation
+  if (!name || !car) {
+    return res.redirect("/borrow?error=Name and car selection are required");
+  }
+  
+  // In a real application, you would process the borrowing logic here
+  // For this demo, we'll just show a success message
+  res.redirect("/track?success=Car borrowed successfully!");
+});
+
+app.get("/return", (req, res) => {
+  res.sendFile(path.join(__dirname, "return.html"));
+});
+
+app.post("/return", (req, res) => {
+  const { name, car } = req.body;
+  
+  // Simple validation
+  if (!name || !car) {
+    return res.redirect("/return?error=Name and car selection are required");
+  }
+  
+  // In a real application, you would process the return logic here
+  // For this demo, we'll just show a success message
+  res.redirect("/track?success=Car returned successfully!");
+});
+
+app.get("/donate", (req, res) => {
+  res.sendFile(path.join(__dirname, "donate.html"));
+});
+
+app.post("/donate", (req, res) => {
+  const { name, car } = req.body;
+  
+  // Simple validation
+  if (!name || !car) {
+    return res.redirect("/donate?error=Name and car name are required");
+  }
+  
+  // In a real application, you would process the donation logic here
+  // For this demo, we'll just show a success message
+  res.redirect("/track?success=Car donated successfully!");
+});
+
+app.get("/track", (req, res) => {
+  res.sendFile(path.join(__dirname, "track.html"));
+});
+
+app.get("/profile", (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect("/?error=Please log in to view your profile");
+  }
+  
+  res.sendFile(path.join(__dirname, "profile.html"));
 });
 
 app.get("/logout", (req, res) => {

@@ -1,35 +1,366 @@
-{% extends 'base.html' %}
-{% block title %}Available Cars • Luxury Car Rental Service{% endblock %}
-{% block nav_list %}active{% endblock %}
-
-{% block content %}
-  <div class="card">
-    <h2 class="animated-title">Available Cars</h2>
-    <div class="row">
-      <input id="carFilter" placeholder="Filter cars by name..." />
-      <a href="/" class="right btn-secondary" style="text-decoration:none; padding:10px 12px; border-radius:10px;">Back</a>
-    </div>
-    <ul class="car-list">
-    {% for car in cars %}
-      <li data-car-item data-name="{{ car }}">
-        <div class="car-item">
-          {% set img = car_images.get(car) %}
-          {% if img and (img.startswith('http://') or img.startswith('https://')) %}
-            <img class="car-thumb" alt="{{ car }} image" loading="lazy"
-                 src="{{ img }}"
-                 onerror="this.onerror=null;this.src='{{ url_for('static', filename='cars/image.png') }}'" />
-          {% else %}
-            <img class="car-thumb" alt="{{ car }} image" loading="lazy"
-                 src="{{ url_for('static', filename='cars/' + (img if img else 'image.png')) }}"
-                 onerror="this.onerror=null;this.src='{{ url_for('static', filename='cars/image.png') }}'" />
-          {% endif %}
-          <div class="car-meta">
-            <span class="car-name">{{ car }}</span>
-          </div>
-        </div>
-        <a href="/borrow" class="btn-secondary" style="text-decoration:none; padding:8px 10px; border-radius:8px;">Borrow</a>
-      </li>
-    {% endfor %}
-    </ul>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Available Cars • Luxury Car Rental Service</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style> 
+    body {
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0;
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(59,130,246,0.08), transparent 60%),
+                  radial-gradient(1200px 700px at 80% -20%, rgba(34,211,238,0.08), transparent 60%),
+                  linear-gradient(180deg, #0a0f1c 0%, #0b1220 60%);
+      color: #fff;
+      min-height: 100vh;
+    }
+    
+    /* Background video layer */
+    .bg-video { position: fixed; inset: 0; z-index: -2; overflow: hidden; }
+    .bg-video-el { position: absolute; left: 50%; top: 50%; min-width: 100%; min-height: 100%; transform: translate(-50%, -50%); filter: blur(10px) saturate(0.9); }
+    .bg-video-overlay { position: absolute; inset: 0; background: radial-gradient(1000px 600px at 20% 0%, rgba(59,130,246,0.12), transparent), radial-gradient(1000px 600px at 80% 0%, rgba(34,211,238,0.12), transparent), rgba(8,12,22,0.60); }
+    
+    /* Navbar */
+    .nav {
+      position: sticky; top: 0; z-index: 10;
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px 20px; background: rgba(8,12,22,0.8);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid #1f2a44;
+      box-shadow: 10px 10px 24px rgba(0,0,0,0.45), -8px -8px 20px rgba(255,255,255,0.05), 0 0 0 1px rgba(122,162,255,0.10) inset;
+      transition: all 0.3s ease;
+    }
+    .brand { 
+      font-weight: 800; 
+      color: #fff; 
+      margin-right: auto; 
+      letter-spacing: 0.5px; 
+      font-size: 1.2rem;
+    }
+    .nav a { 
+      color: #fff; 
+      text-decoration: none; 
+      padding: 8px 10px; 
+      border-radius: 8px; 
+    }
+    .nav a:hover, .nav a.active { 
+      background: #1a2336; 
+      box-shadow: 0 0 0 1px rgba(122,162,255,0.18) inset; 
+    }
+    
+    .container {
+      max-width: 1000px; 
+      margin: 20px auto; 
+      padding: 0 20px;
+    }
+    
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.22)), #121a2b;
+      border: 1px solid #1f2a44;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 10px 10px 24px rgba(0,0,0,0.45), -8px -8px 20px rgba(255,255,255,0.05), 0 0 0 1px rgba(122,162,255,0.10) inset;
+      margin-bottom: 20px;
+    }
+    
+    .animated-title {
+      margin-top: 0;
+      color: #fff;
+      font-size: 1.8rem;
+    }
+    
+    .row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .right {
+      margin-left: auto;
+    }
+    
+    .btn-secondary {
+      background: #1e293b;
+      border: 1px solid #2a3a5f;
+      color: white;
+      padding: 10px 12px;
+      border-radius: 10px;
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-block;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-secondary:hover {
+      box-shadow: 0 0 0 1px rgba(122,162,255,0.2) inset, 0 6px 16px rgba(0,0,0,0.35);
+      transform: translateY(-1px);
+    }
+    
+    #carFilter {
+      padding: 10px 12px;
+      border: 1px solid #263453;
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.2)), #0e1626;
+      color: #fff;
+      width: 300px;
+      max-width: 100%;
+    }
+    
+    #carFilter:focus {
+      outline: none;
+      border-color: #22d3ee;
+      box-shadow: inset 8px 8px 16px rgba(0,0,0,0.45), inset -6px -6px 14px rgba(255,255,255,0.04), 0 0 0 3px rgba(34,211,238,0.25);
+    }
+    
+    .car-list {
+      list-style: none;
+      padding-left: 0;
+    }
+    
+    .car-list li {
+      padding: 10px 12px;
+      border: 1px solid #1f2a44;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.2)), #0f172a;
+      border-radius: 14px;
+      margin: 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
+      box-shadow: 10px 10px 24px rgba(0,0,0,0.45), -8px -8px 20px rgba(255,255,255,0.05), 0 0 0 1px rgba(122,162,255,0.10) inset;
+    }
+    
+    .car-list li:hover {
+      border-color: #2a3a5f;
+      background: #101a2f;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+    }
+    
+    .car-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .car-thumb {
+      width: 84px;
+      height: 56px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid #22304f;
+      background: #0b1220;
+      box-shadow: 8px 8px 18px rgba(0,0,0,0.4), -6px -6px 14px rgba(255,255,255,0.04);
+      transition: border-color .2s ease, box-shadow .2s ease, transform .12s ease;
+    }
+    
+    .car-thumb:hover {
+      border-color: #22d3ee;
+      box-shadow: 0 6px 20px rgba(34,211,238,0.2);
+      transform: translateY(-1px);
+    }
+    
+    .car-name {
+      font-weight: 600;
+      color: #fff;
+    }
+    
+    .footer { 
+      text-align: center; 
+      color: #ffffff; 
+      padding: 30px 12px; 
+      background: rgba(8,12,22,0.8);
+      border-top: 1px solid #1f2a44;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Blurred background video -->
+  <div class="bg-video" aria-hidden="true">
+    <video class="bg-video-el" autoplay muted loop playsinline>
+      <source src="/bg.mp4" type="video/mp4">
+    </video>
+    <div class="bg-video-overlay"></div>
   </div>
-{% endblock %}
+
+  <nav class="nav">
+    <div class="brand">Luxury Car Rental Service</div>
+    <div class="nav-items">
+      <a href="/">Home</a>
+      <a href="/list" class="active">Cars</a>
+      <a href="/borrow">Borrow</a>
+      <a href="/return">Return</a>
+      <a href="/donate">Donate</a>
+      <a href="/track">Track</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="card">
+      <h2 class="animated-title">Available Cars</h2>
+      <div class="row">
+        <input id="carFilter" placeholder="Filter cars by name..." />
+        <a href="/" class="right btn-secondary" style="text-decoration:none; padding:10px 12px; border-radius:10px;">Back</a>
+      </div>
+      <ul class="car-list">
+        <li data-car-item data-name="ORACLE REDBULL RB20">
+          <div class="car-item">
+            <img class="car-thumb" alt="ORACLE REDBULL RB20 image" loading="lazy"
+                 src="/cars/ORACLE REDBULL RB20.jpg"
+                 onerror="this.onerror=null;this.src='/cars/image.png'" />
+            <div class="car-meta">
+              <span class="car-name">ORACLE REDBULL RB20</span>
+            </div>
+          </div>
+          <a href="/borrow" class="btn-secondary" style="text-decoration:none; padding:8px 10px; border-radius:8px;">Borrow</a>
+        </li>
+        
+        <li data-car-item data-name="AMG GLS">
+          <div class="car-item">
+            <img class="car-thumb" alt="AMG GLS image" loading="lazy"
+                 src="/cars/AMG GLS.jpeg"
+                 onerror="this.onerror=null;this.src='/cars/image.png'" />
+            <div class="car-meta">
+              <span class="car-name">AMG GLS</span>
+            </div>
+          </div>
+          <a href="/borrow" class="btn-secondary" style="text-decoration:none; padding:8px 10px; border-radius:8px;">Borrow</a>
+        </li>
+        
+        <li data-car-item data-name="FERRARI 296 GTB">
+          <div class="car-item">
+            <img class="car-thumb" alt="FERRARI 296 GTB image" loading="lazy"
+                 src="/cars/FERRARI 296 GTB.jpg"
+                 onerror="this.onerror=null;this.src='/cars/image.png'" />
+            <div class="car-meta">
+              <span class="car-name">FERRARI 296 GTB</span>
+            </div>
+          </div>
+          <a href="/borrow" class="btn-secondary" style="text-decoration:none; padding:8px 10px; border-radius:8px;">Borrow</a>
+        </li>
+        
+        <li data-car-item data-name="APX GP">
+          <div class="car-item">
+            <img class="car-thumb" alt="APX GP image" loading="lazy"
+                 src="/cars/apx gp.jpg"
+                 onerror="this.onerror=null;this.src='/cars/image.png'" />
+            <div class="car-meta">
+              <span class="car-name">APX GP</span>
+            </div>
+          </div>
+          <a href="/borrow" class="btn-secondary" style="text-decoration:none; padding:8px 10px; border-radius:8px;">Borrow</a>
+        </li>
+        
+        <li data-car-item data-name="MCLAREN 720S">
+          <div class="car-item">
+            <img class="car-thumb" alt="MCLAREN 720S image" loading="lazy"
+                 src="/cars/MCLAREN 720S.jpeg"
+                 onerror="this.onerror=null;this.src='/cars/image.png'" />
+            <div class="car-meta">
+              <span class="car-name">MCLAREN 720S</span>
+            </div>
+          </div>
+          <a href="/borrow" class="btn-secondary" style="text-decoration:none; padding:8px 10px; border-radius:8px;">Borrow</a>
+        </li>
+        
+        <li data-car-item data-name="LAMBORGHINI HURACÁN">
+          <div class="car-item">
+            <img class="car-thumb" alt="LAMBORGHINI HURACÁN image" loading="lazy"
+                 src="/cars/LAMBORGHINI HURACÁN.jpeg"
+                 onerror="this.onerror=null;this.src='/cars/image.png'" />
+            <div class="car-meta">
+              <span class="car-name">LAMBORGHINI HURACÁN</span>
+            </div>
+          </div>
+          <a href="/borrow" class="btn-secondary" style="text-decoration:none; padding:8px 10px; border-radius:8px;">Borrow</a>
+        </li>
+        
+        <li data-car-item data-name="BUGATTI CHIRON">
+          <div class="car-item">
+            <img class="car-thumb" alt="BUGATTI CHIRON image" loading="lazy"
+                 src="/cars/BUGATTI CHIRON.jpeg"
+                 onerror="this.onerror=null;this.src='/cars/image.png'" />
+            <div class="car-meta">
+              <span class="car-name">BUGATTI CHIRON</span>
+            </div>
+          </div>
+          <a href="/borrow" class="btn-secondary" style="text-decoration:none; padding:8px 10px; border-radius:8px;">Borrow</a>
+        </li>
+        
+        <li data-car-item data-name="ASTON MARTIN VANTAGE">
+          <div class="car-item">
+            <img class="car-thumb" alt="ASTON MARTIN VANTAGE image" loading="lazy"
+                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/2019_Aston_Martin_Vantage_V8_Automatic_4.0_Front.jpg/640px-2019_Aston_Martin_Vantage_V8_Automatic_4.0_Front.jpg"
+                 onerror="this.onerror=null;this.src='/cars/image.png'" />
+            <div class="car-meta">
+              <span class="car-name">ASTON MARTIN VANTAGE</span>
+            </div>
+          </div>
+          <a href="/borrow" class="btn-secondary" style="text-decoration:none; padding:8px 10px; border-radius:8px;">Borrow</a>
+        </li>
+        
+        <li data-car-item data-name="PORSCHE 911">
+          <div class="car-item">
+            <img class="car-thumb" alt="PORSCHE 911 image" loading="lazy"
+                 src="/cars/PORSCHE 911.jpeg"
+                 onerror="this.onerror=null;this.src='/cars/image.png'" />
+            <div class="car-meta">
+              <span class="car-name">PORSCHE 911</span>
+            </div>
+          </div>
+          <a href="/borrow" class="btn-secondary" style="text-decoration:none; padding:8px 10px; border-radius:8px;">Borrow</a>
+        </li>
+        
+        <li data-car-item data-name="BMW M3">
+          <div class="car-item">
+            <img class="car-thumb" alt="BMW M3 image" loading="lazy"
+                 src="/cars/BMW M3.jpeg"
+                 onerror="this.onerror=null;this.src='/cars/image.png'" />
+            <div class="car-meta">
+              <span class="car-name">BMW M3</span>
+            </div>
+          </div>
+          <a href="/borrow" class="btn-secondary" style="text-decoration:none; padding:8px 10px; border-radius:8px;">Borrow</a>
+        </li>
+        
+        <li data-car-item data-name="AUDI R8">
+          <div class="car-item">
+            <img class="car-thumb" alt="AUDI R8 image" loading="lazy"
+                 src="/cars/AUDI R8.jpeg"
+                 onerror="this.onerror=null;this.src='/cars/image.png'" />
+            <div class="car-meta">
+              <span class="car-name">AUDI R8</span>
+            </div>
+          </div>
+          <a href="/borrow" class="btn-secondary" style="text-decoration:none; padding:8px 10px; border-radius:8px;">Borrow</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer">Made with ❤️ for fast and fun rides</div>
+  
+  <script>
+    // Simple car filtering
+    document.getElementById('carFilter').addEventListener('input', function(e) {
+      const filterValue = e.target.value.toLowerCase();
+      const carItems = document.querySelectorAll('[data-car-item]');
+      
+      carItems.forEach(item => {
+        const carName = item.getAttribute('data-name').toLowerCase();
+        if (carName.includes(filterValue)) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

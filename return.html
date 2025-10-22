@@ -1,114 +1,287 @@
-{% extends 'base.html' %}
-{% block title %}Return • Luxury Car Rental Service{% endblock %}
-{% block nav_return %}active{% endblock %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Return • Luxury Car Rental Service</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style> 
+    body {
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0;
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(59,130,246,0.08), transparent 60%),
+                  radial-gradient(1200px 700px at 80% -20%, rgba(34,211,238,0.08), transparent 60%),
+                  linear-gradient(180deg, #0a0f1c 0%, #0b1220 60%);
+      color: #fff;
+      min-height: 100vh;
+    }
+    
+    /* Background video layer */
+    .bg-video { position: fixed; inset: 0; z-index: -2; overflow: hidden; }
+    .bg-video-el { position: absolute; left: 50%; top: 50%; min-width: 100%; min-height: 100%; transform: translate(-50%, -50%); filter: blur(10px) saturate(0.9); }
+    .bg-video-overlay { position: absolute; inset: 0; background: radial-gradient(1000px 600px at 20% 0%, rgba(59,130,246,0.12), transparent), radial-gradient(1000px 600px at 80% 0%, rgba(34,211,238,0.12), transparent), rgba(8,12,22,0.60); }
+    
+    /* Navbar */
+    .nav {
+      position: sticky; top: 0; z-index: 10;
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px 20px; background: rgba(8,12,22,0.8);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid #1f2a44;
+      box-shadow: 10px 10px 24px rgba(0,0,0,0.45), -8px -8px 20px rgba(255,255,255,0.05), 0 0 0 1px rgba(122,162,255,0.10) inset;
+      transition: all 0.3s ease;
+    }
+    .brand { 
+      font-weight: 800; 
+      color: #fff; 
+      margin-right: auto; 
+      letter-spacing: 0.5px; 
+      font-size: 1.2rem;
+    }
+    .nav a { 
+      color: #fff; 
+      text-decoration: none; 
+      padding: 8px 10px; 
+      border-radius: 8px; 
+    }
+    .nav a:hover, .nav a.active { 
+      background: #1a2336; 
+      box-shadow: 0 0 0 1px rgba(122,162,255,0.18) inset; 
+    }
+    
+    .container {
+      max-width: 1000px; 
+      margin: 20px auto; 
+      padding: 0 20px;
+    }
+    
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.22)), #121a2b;
+      border: 1px solid #1f2a44;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 10px 10px 24px rgba(0,0,0,0.45), -8px -8px 20px rgba(255,255,255,0.05), 0 0 0 1px rgba(122,162,255,0.10) inset;
+      margin-bottom: 20px;
+    }
+    
+    h2 {
+      margin-top: 0;
+      color: #fff;
+      font-size: 1.8rem;
+    }
+    
+    .row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    label {
+      width: 140px;
+      font-weight: 500;
+    }
+    
+    input[type="text"], select {
+      padding: 10px 12px;
+      border: 1px solid #263453;
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.2)), #0e1626;
+      color: #fff;
+      flex: 1;
+      max-width: 400px;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: #22d3ee;
+      box-shadow: inset 8px 8px 16px rgba(0,0,0,0.45), inset -6px -6px 14px rgba(255,255,255,0.04), 0 0 0 3px rgba(34,211,238,0.25);
+    }
+    
+    button {
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.25)), linear-gradient(90deg, #3b82f6, #2563eb);
+      color: white;
+      border: 0;
+      padding: 10px 14px;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 10px 10px 24px rgba(0,0,0,0.45), -8px -8px 20px rgba(255,255,255,0.05);
+      transition: box-shadow .15s ease, transform .1s ease, filter .15s ease;
+      font-weight: 500;
+    }
+    
+    button:hover {
+      filter: brightness(1.05);
+    }
+    
+    .btn-secondary {
+      background: #1e293b;
+      border: 1px solid #2a3a5f;
+      color: white;
+      padding: 10px 12px;
+      border-radius: 10px;
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-block;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-secondary:hover {
+      box-shadow: 0 0 0 1px rgba(122,162,255,0.2) inset, 0 6px 16px rgba(0,0,0,0.35);
+      transform: translateY(-1px);
+    }
+    
+    .car-thumb {
+      width: 84px;
+      height: 56px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid #22304f;
+      background: #0b1220;
+      box-shadow: 8px 8px 18px rgba(0,0,0,0.4), -6px -6px 14px rgba(255,255,255,0.04);
+    }
+    
+    .muted {
+      color: #94a3b8;
+    }
+    
+    #returnPreview {
+      align-items: center;
+      gap: 10px;
+    }
+    
+    #returnImg {
+      display: none;
+    }
+    
+    .footer { 
+      text-align: center; 
+      color: #ffffff; 
+      padding: 30px 12px; 
+      background: rgba(8,12,22,0.8);
+      border-top: 1px solid #1f2a44;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Blurred background video -->
+  <div class="bg-video" aria-hidden="true">
+    <video class="bg-video-el" autoplay muted loop playsinline>
+      <source src="/bg.mp4" type="video/mp4">
+    </video>
+    <div class="bg-video-overlay"></div>
+  </div>
 
-{% block content %}
-  <div class="card">
-    <h2>Return a Car</h2>
-    <form method="POST">
-      <div class="row">
-        <label style="width:140px">Your Name</label>
-        <input type="text" name="name" required>
-      </div>
-      <div class="row">
-        <label style="width:140px">Car Name</label>
-        <select name="car" id="returnCarSelect" required>
-          <option value="">Select a borrowed car</option>
-          {% if borrowed_cars %}
-            {% for item in borrowed_cars %}
-              <option value="{{ item.car_name }}" data-borrower="{{ item.borrower_name }}">
-                {{ item.car_name }} (Borrowed by {{ item.borrower_name }})
-              </option>
-            {% endfor %}
-          {% endif %}
-        </select>
-        <div id="returnPreview" class="row" style="align-items:center; gap:10px;">
-          <img id="returnImg" class="car-thumb" alt="Car preview" loading="lazy" style="display:none;" />
-          <span id="returnLabel" class="muted"></span>
+  <nav class="nav">
+    <div class="brand">Luxury Car Rental Service</div>
+    <div class="nav-items">
+      <a href="/">Home</a>
+      <a href="/list">Cars</a>
+      <a href="/borrow">Borrow</a>
+      <a href="/return" class="active">Return</a>
+      <a href="/donate">Donate</a>
+      <a href="/track">Track</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="card">
+      <h2>Return a Car</h2>
+      <form method="POST">
+        <div class="row">
+          <label style="width:140px">Your Name</label>
+          <input type="text" name="name" required>
         </div>
-      </div>
-      <div class="row">
-        <button type="submit">Return</button>
-        <a href="/" class="btn-secondary" style="text-decoration:none; padding:10px 12px; border-radius:10px;">Back</a>
-      </div>
-    </form>
+        <div class="row">
+          <label style="width:140px">Car Name</label>
+          <select name="car" id="returnCarSelect" required>
+            <option value="">Select a borrowed car</option>
+            <option value="ORACLE REDBULL RB20" data-borrower="John Doe">
+              ORACLE REDBULL RB20 (Borrowed by John Doe)
+            </option>
+            <option value="AMG GLS" data-borrower="Jane Smith">
+              AMG GLS (Borrowed by Jane Smith)
+            </option>
+            <option value="FERRARI 296 GTB" data-borrower="Mike Johnson">
+              FERRARI 296 GTB (Borrowed by Mike Johnson)
+            </option>
+          </select>
+          <div id="returnPreview" class="row" style="align-items:center; gap:10px;">
+            <img id="returnImg" class="car-thumb" alt="Car preview" loading="lazy" style="display:none;" />
+            <span id="returnLabel" class="muted"></span>
+          </div>
+        </div>
+        <div class="row">
+          <button type="submit">Return</button>
+          <a href="/" class="btn-secondary" style="text-decoration:none; padding:10px 12px; border-radius:10px;">Back</a>
+        </div>
+      </form>
+    </div>
   </div>
+
+  <div class="footer">Made with ❤️ for fast and fun rides</div>
   
-  <!-- Store car images mapping in a hidden div -->
-  <div id="carImagesData" style="display:none;">
-    {% for car, img_url in car_images.items() %}
-      <span data-car="{{ car }}" data-img="{{ img_url }}"></span>
-    {% endfor %}
-  </div>
-{% endblock %}
-
-{% block footer %}
-<script>
-  document.addEventListener('DOMContentLoaded', function(){
-    // Create car images mapping from hidden div
-    const carImagesData = {};
-    const carImagesContainer = document.getElementById('carImagesData');
-    if (carImagesContainer) {
-      const spans = carImagesContainer.querySelectorAll('span');
-      spans.forEach(span => {
-        const car = span.dataset.car;
-        const img = span.dataset.img;
-        if (car && img) {
-          carImagesData[car] = img;
+  <script>
+    // Car images mapping
+    const carImagesData = {
+      "ORACLE REDBULL RB20": "/cars/ORACLE REDBULL RB20.jpg",
+      "AMG GLS": "/cars/AMG GLS.jpeg",
+      "FERRARI 296 GTB": "/cars/FERRARI 296 GTB.jpg",
+      "APX GP": "/cars/apx gp.jpg",
+      "MCLAREN 720S": "/cars/MCLAREN 720S.jpeg",
+      "LAMBORGHINI HURACÁN": "/cars/LAMBORGHINI HURACÁN.jpeg",
+      "BUGATTI CHIRON": "/cars/BUGATTI CHIRON.jpeg",
+      "ASTON MARTIN VANTAGE": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/2019_Aston_Martin_Vantage_V8_Automatic_4.0_Front.jpg/640px-2019_Aston_Martin_Vantage_V8_Automatic_4.0_Front.jpg",
+      "PORSCHE 911": "/cars/PORSCHE 911.jpeg",
+      "BMW M3": "/cars/BMW M3.jpeg",
+      "AUDI R8": "/cars/AUDI R8.jpeg"
+    };
+    
+    document.addEventListener('DOMContentLoaded', function(){
+      const select = document.getElementById('returnCarSelect');
+      const img = document.getElementById('returnImg');
+      const label = document.getElementById('returnLabel');
+      
+      if (!select || !img || !label) return;
+      
+      function update(){
+        const selectedOption = select.options[select.selectedIndex];
+        if (!selectedOption.value) {
+          img.style.display = 'none';
+          label.textContent = '';
+          return;
         }
-      });
-    }
-    
-    const returnCarSelect = document.getElementById('returnCarSelect');
-    if (returnCarSelect) {
-      returnCarSelect.dataset.carImages = JSON.stringify(carImagesData);
-    }
-  });
-</script>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function(){
-    const select = document.getElementById('returnCarSelect');
-    const img = document.getElementById('returnImg');
-    const label = document.getElementById('returnLabel');
-    
-    if (!select || !img || !label) return;
-    
-    // Get car images mapping from data attribute
-    const mapping = JSON.parse(select.dataset.carImages || '{}');
-    
-    function update(){
-      const selectedOption = select.options[select.selectedIndex];
-      if (!selectedOption.value) {
-        img.style.display = 'none';
-        label.textContent = '';
-        return;
+        
+        const carName = selectedOption.value;
+        const borrowerName = selectedOption.dataset.borrower;
+        
+        label.textContent = `Preview for: ${carName} (Borrowed by ${borrowerName})`;
+        
+        let src = carImagesData[carName];
+        if(!src){
+          img.style.display = 'none';
+          return;
+        }
+        img.style.display = '';
+        if(/^https?:\/\//i.test(src)){
+          img.src = src;
+        } else {
+          img.src = src;
+        }
+        img.onerror = function(){ 
+          this.onerror = null; 
+          this.src = "/cars/image.png"; 
+        };
       }
       
-      const carName = selectedOption.value;
-      const borrowerName = selectedOption.dataset.borrower;
-      
-      label.textContent = `Preview for: ${carName} (Borrowed by ${borrowerName})`;
-      
-      let src = mapping[carName];
-      if(!src){
-        img.style.display = 'none';
-        return;
-      }
-      img.style.display = '';
-      if(/^https?:\/\//i.test(src)){
-        img.src = src;
-      } else {
-        img.src = "{{ url_for('static', filename='cars/') }}" + src;
-      }
-      img.onerror = function(){ 
-        this.onerror = null; 
-        this.src = "{{ url_for('static', filename='cars/image.png') }}"; 
-      };
-    }
-    
-    select.addEventListener('change', update);
-    update();
-  });
-</script>
-{% endblock %}
+      select.addEventListener('change', update);
+      update();
+    });
+  </script>
+</body>
+</html>

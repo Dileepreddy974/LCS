@@ -1,8 +1,170 @@
-{% extends 'base.html' %}
-{% block title %}Donate • Luxury Car Rental Service{% endblock %}
-{% block nav_donate %}active{% endblock %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Donate • Luxury Car Rental Service</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style> 
+    body {
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0;
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(59,130,246,0.08), transparent 60%),
+                  radial-gradient(1200px 700px at 80% -20%, rgba(34,211,238,0.08), transparent 60%),
+                  linear-gradient(180deg, #0a0f1c 0%, #0b1220 60%);
+      color: #fff;
+      min-height: 100vh;
+    }
+    
+    /* Background video layer */
+    .bg-video { position: fixed; inset: 0; z-index: -2; overflow: hidden; }
+    .bg-video-el { position: absolute; left: 50%; top: 50%; min-width: 100%; min-height: 100%; transform: translate(-50%, -50%); filter: blur(10px) saturate(0.9); }
+    .bg-video-overlay { position: absolute; inset: 0; background: radial-gradient(1000px 600px at 20% 0%, rgba(59,130,246,0.12), transparent), radial-gradient(1000px 600px at 80% 0%, rgba(34,211,238,0.12), transparent), rgba(8,12,22,0.60); }
+    
+    /* Navbar */
+    .nav {
+      position: sticky; top: 0; z-index: 10;
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px 20px; background: rgba(8,12,22,0.8);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid #1f2a44;
+      box-shadow: 10px 10px 24px rgba(0,0,0,0.45), -8px -8px 20px rgba(255,255,255,0.05), 0 0 0 1px rgba(122,162,255,0.10) inset;
+      transition: all 0.3s ease;
+    }
+    .brand { 
+      font-weight: 800; 
+      color: #fff; 
+      margin-right: auto; 
+      letter-spacing: 0.5px; 
+      font-size: 1.2rem;
+    }
+    .nav a { 
+      color: #fff; 
+      text-decoration: none; 
+      padding: 8px 10px; 
+      border-radius: 8px; 
+    }
+    .nav a:hover, .nav a.active { 
+      background: #1a2336; 
+      box-shadow: 0 0 0 1px rgba(122,162,255,0.18) inset; 
+    }
+    
+    .container {
+      max-width: 1000px; 
+      margin: 20px auto; 
+      padding: 0 20px;
+    }
+    
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.22)), #121a2b;
+      border: 1px solid #1f2a44;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 10px 10px 24px rgba(0,0,0,0.45), -8px -8px 20px rgba(255,255,255,0.05), 0 0 0 1px rgba(122,162,255,0.10) inset;
+      margin-bottom: 20px;
+    }
+    
+    h2 {
+      margin-top: 0;
+      color: #fff;
+      font-size: 1.8rem;
+    }
+    
+    .row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    label {
+      width: 140px;
+      font-weight: 500;
+    }
+    
+    input[type="text"] {
+      padding: 10px 12px;
+      border: 1px solid #263453;
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.2)), #0e1626;
+      color: #fff;
+      flex: 1;
+      max-width: 400px;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: #22d3ee;
+      box-shadow: inset 8px 8px 16px rgba(0,0,0,0.45), inset -6px -6px 14px rgba(255,255,255,0.04), 0 0 0 3px rgba(34,211,238,0.25);
+    }
+    
+    button {
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.25)), linear-gradient(90deg, #3b82f6, #2563eb);
+      color: white;
+      border: 0;
+      padding: 10px 14px;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 10px 10px 24px rgba(0,0,0,0.45), -8px -8px 20px rgba(255,255,255,0.05);
+      transition: box-shadow .15s ease, transform .1s ease, filter .15s ease;
+      font-weight: 500;
+    }
+    
+    button:hover {
+      filter: brightness(1.05);
+    }
+    
+    .btn-secondary {
+      background: #1e293b;
+      border: 1px solid #2a3a5f;
+      color: white;
+      padding: 10px 12px;
+      border-radius: 10px;
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-block;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-secondary:hover {
+      box-shadow: 0 0 0 1px rgba(122,162,255,0.2) inset, 0 6px 16px rgba(0,0,0,0.35);
+      transform: translateY(-1px);
+    }
+    
+    .footer { 
+      text-align: center; 
+      color: #ffffff; 
+      padding: 30px 12px; 
+      background: rgba(8,12,22,0.8);
+      border-top: 1px solid #1f2a44;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Blurred background video -->
+  <div class="bg-video" aria-hidden="true">
+    <video class="bg-video-el" autoplay muted loop playsinline>
+      <source src="/bg.mp4" type="video/mp4">
+    </video>
+    <div class="bg-video-overlay"></div>
+  </div>
 
-{% block content %}
+  <nav class="nav">
+    <div class="brand">Luxury Car Rental Service</div>
+    <div class="nav-items">
+      <a href="/">Home</a>
+      <a href="/list">Cars</a>
+      <a href="/borrow">Borrow</a>
+      <a href="/return">Return</a>
+      <a href="/donate" class="active">Donate</a>
+      <a href="/track">Track</a>
+    </div>
+  </nav>
 
   <div class="container">
     <div class="card">
@@ -24,4 +186,6 @@
     </div>
   </div>
 
-{% endblock %}
+  <div class="footer">Made with ❤️ for fast and fun rides</div>
+</body>
+</html>

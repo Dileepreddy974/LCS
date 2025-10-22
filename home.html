@@ -1,63 +1,154 @@
-{% extends 'base.html' %}
-{% block title %}Home • Luxury Car Rental Service{% endblock %}
-{% block nav_home %}active{% endblock %}
-
-{% block hero %}
-  <header class="hero">
-    <div class="hero-inner">
-      <h1 class="animated-title">🚗 Welcome to Luxury Car Rental Service</h1>
-      <p class="muted">Pick your ride, hit the road, track it all here.</p>
-      <div class="spacer"></div>
-      <div class="card">
-        <h2>Available Cars</h2>
-        <div class="row" style="gap:12px; flex-wrap:wrap;">
-          {% for car in cars %}
-            {% set img = car_images.get(car) %}
-            <a href="/borrow" class="car-item" style="text-decoration:none;">
-              {% if img and (img.startswith('http://') or img.startswith('https://')) %}
-                <img class="car-thumb" alt="{{ car }} image" loading="lazy"
-                     src="{{ img }}" id="img-{{ loop.index }}" />
-              {% else %}
-                <img class="car-thumb" alt="{{ car }} image" loading="lazy"
-                     src="{{ url_for('static', filename='cars/' + (img if img else 'image.png')) }}"
-                     id="img-{{ loop.index }}" />
-              {% endif %}
-              <span class="car-name">{{ car }}</span>
-            </a>
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-  </header>
-{% endblock %}
-
-{% block content %}
-  <div class="actions-container">
-    <div class="actions-grid">
-      <a href="/list" class="action-card">
-        <h3>View Cars</h3>
-        <p>Browse our luxury car collection</p>
-      </a>
-      <a href="/borrow" class="action-card">
-        <h3>Borrow</h3>
-        <p>Rent your favorite luxury car</p>
-      </a>
-      <a href="/return" class="action-card">
-        <h3>Return</h3>
-        <p>Return a car you've borrowed</p>
-      </a>
-      <a href="/donate" class="action-card">
-        <h3>Donate</h3>
-        <p>Contribute a car to our fleet</p>
-      </a>
-      <a href="/track" class="action-card">
-        <h3>Track</h3>
-        <p>View your rental history</p>
-      </a>
-    </div>
-  </div>
-  
-  <style>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Home • Luxury Car Rental Service</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style> 
+    body {
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0;
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(59,130,246,0.08), transparent 60%),
+                  radial-gradient(1200px 700px at 80% -20%, rgba(34,211,238,0.08), transparent 60%),
+                  linear-gradient(180deg, #0a0f1c 0%, #0b1220 60%);
+      color: #fff;
+      min-height: 100vh;
+    }
+    
+    /* Background video layer */
+    .bg-video { position: fixed; inset: 0; z-index: -2; overflow: hidden; }
+    .bg-video-el { position: absolute; left: 50%; top: 50%; min-width: 100%; min-height: 100%; transform: translate(-50%, -50%); filter: blur(10px) saturate(0.9); }
+    .bg-video-overlay { position: absolute; inset: 0; background: radial-gradient(1000px 600px at 20% 0%, rgba(59,130,246,0.12), transparent), radial-gradient(1000px 600px at 80% 0%, rgba(34,211,238,0.12), transparent), rgba(8,12,22,0.60); }
+    
+    /* Navbar */
+    .nav {
+      position: sticky; top: 0; z-index: 10;
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px 20px; background: rgba(8,12,22,0.8);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid #1f2a44;
+      box-shadow: 10px 10px 24px rgba(0,0,0,0.45), -8px -8px 20px rgba(255,255,255,0.05), 0 0 0 1px rgba(122,162,255,0.10) inset;
+      transition: all 0.3s ease;
+    }
+    .brand { 
+      font-weight: 800; 
+      color: #fff; 
+      margin-right: auto; 
+      letter-spacing: 0.5px; 
+      font-size: 1.2rem;
+    }
+    .nav a { 
+      color: #fff; 
+      text-decoration: none; 
+      padding: 8px 10px; 
+      border-radius: 8px; 
+    }
+    .nav a:hover, .nav a.active { 
+      background: #1a2336; 
+      box-shadow: 0 0 0 1px rgba(122,162,255,0.18) inset; 
+    }
+    
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(1200px 400px at 20% 0%, rgba(59,130,246,0.14), transparent),
+                  radial-gradient(1000px 400px at 80% 10%, rgba(34,211,238,0.12), transparent);
+      border-bottom: 1px solid #1f2a44;
+      padding: 20px 0;
+    }
+    
+    .hero-inner {
+      max-width: 1000px; 
+      margin: 0 auto; 
+      padding: 36px 20px 56px;
+    }
+    
+    .animated-title {
+      margin: 0 0 8px; 
+      font-size: 2.5rem;
+      animation: fadeInSlideUp 1s ease-out;
+    }
+    
+    @keyframes fadeInSlideUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .muted { 
+      color: #94a3b8; 
+      margin: 0 0 20px 0;
+    }
+    
+    .spacer { 
+      height: 16px; 
+    }
+    
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.22)), #121a2b;
+      border: 1px solid #1f2a44;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 10px 10px 24px rgba(0,0,0,0.45), -8px -8px 20px rgba(255,255,255,0.05), 0 0 0 1px rgba(122,162,255,0.10) inset;
+      margin-bottom: 20px;
+    }
+    
+    h2 {
+      margin-top: 0;
+      color: #fff;
+      font-size: 1.8rem;
+    }
+    
+    .row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .car-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: #fff;
+      transition: transform 0.2s ease;
+    }
+    
+    .car-item:hover {
+      transform: translateY(-5px);
+    }
+    
+    .car-thumb {
+      width: 120px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid #22304f;
+      background: #0b1220;
+      box-shadow: 8px 8px 18px rgba(0,0,0,0.4), -6px -6px 14px rgba(255,255,255,0.04);
+    }
+    
+    .car-name {
+      margin-top: 8px;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    
+    .container {
+      max-width: 1000px; 
+      margin: 20px auto; 
+      padding: 0 20px;
+    }
+    
     .actions-container {
       padding: 20px 0;
     }
@@ -70,49 +161,139 @@
     }
     
     .action-card {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(10px);
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.22)), #121a2b;
+      border: 1px solid #1f2a44;
       border-radius: 15px;
       padding: 25px 20px;
       text-align: center;
       text-decoration: none;
-      color: #333;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      color: #fff;
+      box-shadow: 10px 10px 24px rgba(0,0,0,0.45), -8px -8px 20px rgba(255,255,255,0.05), 0 0 0 1px rgba(122,162,255,0.10) inset;
       transition: all 0.3s ease;
     }
     
     .action-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-      background: rgba(255, 255, 255, 0.9);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.25)), #121a2b;
     }
     
     .action-card h3 {
       margin: 0 0 10px 0;
       font-size: 1.3rem;
-      color: #4e54c8;
+      color: #3b82f6;
     }
     
     .action-card p {
       margin: 0;
-      color: #666;
+      color: #94a3b8;
       font-size: 0.9rem;
     }
+    
+    .footer { 
+      text-align: center; 
+      color: #ffffff; 
+      padding: 30px 12px; 
+      background: rgba(8,12,22,0.8);
+      border-top: 1px solid #1f2a44;
+      margin-top: 40px;
+    }
   </style>
-{% endblock %}
+</head>
+<body>
+  <!-- Blurred background video -->
+  <div class="bg-video" aria-hidden="true">
+    <video class="bg-video-el" autoplay muted loop playsinline>
+      <source src="/bg.mp4" type="video/mp4">
+    </video>
+    <div class="bg-video-overlay"></div>
+  </div>
 
-{% block footer %}
-<script>
-  // Add error handling for images
-  document.addEventListener('DOMContentLoaded', function() {
-    const images = document.querySelectorAll('.car-thumb');
-    images.forEach(function(img) {
-      img.onerror = function() {
-        this.onerror = null;
-        this.src = "{{ url_for('static', filename='cars/image.png') }}";
-      };
+  <nav class="nav">
+    <div class="brand">Luxury Car Rental Service</div>
+    <div class="nav-items">
+      <a href="/" class="active">Home</a>
+      <a href="/list">Cars</a>
+      <a href="/borrow">Borrow</a>
+      <a href="/return">Return</a>
+      <a href="/donate">Donate</a>
+      <a href="/track">Track</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <h1 class="animated-title">🚗 Welcome to Luxury Car Rental Service</h1>
+      <p class="muted">Pick your ride, hit the road, track it all here.</p>
+      <div class="spacer"></div>
+      <div class="card">
+        <h2>Available Cars</h2>
+        <div class="row" style="gap:12px; flex-wrap:wrap;">
+          <a href="/borrow" class="car-item" style="text-decoration:none;">
+            <img class="car-thumb" alt="ORACLE REDBULL RB20 image" loading="lazy"
+                 src="/cars/ORACLE REDBULL RB20.jpg" id="img-1" />
+            <span class="car-name">ORACLE REDBULL RB20</span>
+          </a>
+          <a href="/borrow" class="car-item" style="text-decoration:none;">
+            <img class="car-thumb" alt="AMG GLS image" loading="lazy"
+                 src="/cars/AMG GLS.jpeg" id="img-2" />
+            <span class="car-name">AMG GLS</span>
+          </a>
+          <a href="/borrow" class="car-item" style="text-decoration:none;">
+            <img class="car-thumb" alt="FERRARI 296 GTB image" loading="lazy"
+                 src="/cars/FERRARI 296 GTB.jpg" id="img-3" />
+            <span class="car-name">FERRARI 296 GTB</span>
+          </a>
+          <a href="/borrow" class="car-item" style="text-decoration:none;">
+            <img class="car-thumb" alt="APX GP image" loading="lazy"
+                 src="/cars/apx gp.jpg" id="img-4" />
+            <span class="car-name">APX GP</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="actions-container">
+      <div class="actions-grid">
+        <a href="/list" class="action-card">
+          <h3>View Cars</h3>
+          <p>Browse our luxury car collection</p>
+        </a>
+        <a href="/borrow" class="action-card">
+          <h3>Borrow</h3>
+          <p>Rent your favorite luxury car</p>
+        </a>
+        <a href="/return" class="action-card">
+          <h3>Return</h3>
+          <p>Return a car you've borrowed</p>
+        </a>
+        <a href="/donate" class="action-card">
+          <h3>Donate</h3>
+          <p>Contribute a car to our fleet</p>
+        </a>
+        <a href="/track" class="action-card">
+          <h3>Track</h3>
+          <p>View your rental history</p>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">Made with ❤️ for fast and fun rides</div>
+  
+  <script>
+    // Add error handling for images
+    document.addEventListener('DOMContentLoaded', function() {
+      const images = document.querySelectorAll('.car-thumb');
+      images.forEach(function(img) {
+        img.onerror = function() {
+          this.onerror = null;
+          this.src = "/cars/image.png";
+        };
+      });
     });
-  });
-</script>
-{% endblock %}
+  </script>
+</body>
+</html>
