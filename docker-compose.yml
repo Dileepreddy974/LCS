@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:13
+    container_name: car_rental_db
+    restart: always
+    environment:
+      POSTGRES_DB: car_rental
+      POSTGRES_USER: car_user
+      POSTGRES_PASSWORD: car_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  postgres_data:

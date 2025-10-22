@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Register • Luxury Car Rental Service{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <h2 class="animated-title">Create Account</h2>
+    <form method="POST" enctype="multipart/form-data">
+      <div class="row">
+        <label style="width:140px">Full Name</label>
+        <input type="text" name="name" required>
+      </div>
+      <div class="row">
+        <label style="width:140px">Email</label>
+        <input type="email" name="email" required>
+      </div>
+      <div class="row">
+        <label style="width:140px">Profile Picture</label>
+        <input type="file" name="profile_image" accept="image/*">
+      </div>
+      <div class="row">
+        <button type="submit">Register</button>
+        <a href="/" class="btn-secondary" style="text-decoration:none; padding:10px 12px; border-radius:10px;">Cancel</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}

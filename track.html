@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}Track • Luxury Car Rental Service{% endblock %}
+{% block nav_track %}active{% endblock %}
+
+{% block content %}
+
+  <div class="container">
+    <div class="card">
+      <h2>Currently Borrowed Cars</h2>
+      {% if borrowed_records %}
+        <ul class="car-list">
+        {% for record in borrowed_records %}
+          <li>
+            <div class="car-item">
+              {% set img = car_images.get(record.car.name) %}
+              {% if img and (img.startswith('http://') or img.startswith('https://')) %}
+                <img class="car-thumb" alt="{{ record.car.name }} image" loading="lazy"
+                     src="{{ img }}"
+                     onerror="this.onerror=null;this.src='{{ url_for('static', filename='cars/image.png') }}';" />
+              {% else %}
+                <img class="car-thumb" alt="{{ record.car.name }} image" loading="lazy"
+                     src="{{ url_for('static', filename='cars/' + (img if img else 'image.png')) }}"
+                     onerror="this.onerror=null;this.src='{{ url_for('static', filename='cars/image.png') }}';" />
+              {% endif %}
+              <div class="car-meta">
+                <span class="car-name">{{ record.car.name }}</span>
+                <span class="muted">Borrowed by {{ record.borrower.name }}</span>
+                <span class="muted">Borrowed on {{ record.borrowed_at.strftime('%Y-%m-%d %H:%M') }}</span>
+              </div>
+            </div>
+            <span class="muted">On road</span>
+          </li>
+        {% endfor %}
+        </ul>
+      {% else %}
+        <p class="muted">No cars currently borrowed.</p>
+      {% endif %}
+    </div>
+
+    <div class="card" style="margin-top: 2rem;">
+      <h2>Returned Cars History</h2>
+      {% if returned_records %}
+        <ul class="car-list">
+        {% for record in returned_records %}
+          <li>
+            <div class="car-item">
+              {% set img = car_images.get(record.car.name) %}
+              {% if img and (img.startswith('http://') or img.startswith('https://')) %}
+                <img class="car-thumb" alt="{{ record.car.name }} image" loading="lazy"
+                     src="{{ img }}"
+                     onerror="this.onerror=null;this.src='{{ url_for('static', filename='cars/image.png') }}';" />
+              {% else %}
+                <img class="car-thumb" alt="{{ record.car.name }} image" loading="lazy"
+                     src="{{ url_for('static', filename='cars/' + (img if img else 'image.png')) }}"
+                     onerror="this.onerror=null;this.src='{{ url_for('static', filename='cars/image.png') }}';" />
+              {% endif %}
+              <div class="car-meta">
+                <span class="car-name">{{ record.car.name }}</span>
+                <span class="muted">Returned by {{ record.borrower.name }}</span>
+                <span class="muted">Borrowed on {{ record.borrowed_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                <span class="muted">Returned on {{ record.returned_at.strftime('%Y-%m-%d %H:%M') }}</span>
+              </div>
+            </div>
+            <span class="muted">Returned</span>
+          </li>
+        {% endfor %}
+        </ul>
+      {% else %}
+        <p class="muted">No cars have been returned yet.</p>
+      {% endif %}
+    </div>
+
+    <div class="card" style="margin-top: 2rem;">
+      <h2>Donated Cars</h2>
+      {% if donated_records %}
+        <ul class="car-list">
+        {% for record in donated_records %}
+          <li>
+            <div class="car-item">
+              {% set img = car_images.get(record.car_name) %}
+              {% if img and (img.startswith('http://') or img.startswith('https://')) %}
+                <img class="car-thumb" alt="{{ record.car_name }} image" loading="lazy"
+                     src="{{ img }}"
+                     onerror="this.onerror=null;this.src='{{ url_for('static', filename='cars/image.png') }}';" />
+              {% else %}
+                <img class="car-thumb" alt="{{ record.car_name }} image" loading="lazy"
+                     src="{{ url_for('static', filename='cars/' + (img if img else 'image.png')) }}"
+                     onerror="this.onerror=null;this.src='{{ url_for('static', filename='cars/image.png') }}';" />
+              {% endif %}
+              <div class="car-meta">
+                <span class="car-name">{{ record.car_name }}</span>
+                <span class="muted">Donated by {{ record.donor_name }}</span>
+                <span class="muted">Donated on {{ record.donated_at.strftime('%Y-%m-%d %H:%M') }}</span>
+              </div>
+            </div>
+            <span class="muted">Donated</span>
+          </li>
+        {% endfor %}
+        </ul>
+      {% else %}
+        <p class="muted">No cars have been donated yet.</p>
+      {% endif %}
+    </div>
+
+    <div class="row">
+      <a href="/" class="btn-secondary" style="text-decoration:none; padding:10px 12px; border-radius:10px;">Back</a>
+    </div>
+  </div>
+
+{% endblock %}

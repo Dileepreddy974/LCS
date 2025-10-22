@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Available Cars • Luxury Car Rental Service{% endblock %}
+{% block nav_list %}active{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <h2 class="animated-title">Available Cars</h2>
+    <div class="row">
+      <input id="carFilter" placeholder="Filter cars by name..." />
+      <a href="/" class="right btn-secondary" style="text-decoration:none; padding:10px 12px; border-radius:10px;">Back</a>
+    </div>
+    <ul class="car-list">
+    {% for car in cars %}
+      <li data-car-item data-name="{{ car }}">
+        <div class="car-item">
+          {% set img = car_images.get(car) %}
+          {% if img and (img.startswith('http://') or img.startswith('https://')) %}
+            <img class="car-thumb" alt="{{ car }} image" loading="lazy"
+                 src="{{ img }}"
+                 onerror="this.onerror=null;this.src='{{ url_for('static', filename='cars/image.png') }}'" />
+          {% else %}
+            <img class="car-thumb" alt="{{ car }} image" loading="lazy"
+                 src="{{ url_for('static', filename='cars/' + (img if img else 'image.png')) }}"
+                 onerror="this.onerror=null;this.src='{{ url_for('static', filename='cars/image.png') }}'" />
+          {% endif %}
+          <div class="car-meta">
+            <span class="car-name">{{ car }}</span>
+          </div>
+        </div>
+        <a href="/borrow" class="btn-secondary" style="text-decoration:none; padding:8px 10px; border-radius:8px;">Borrow</a>
+      </li>
+    {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

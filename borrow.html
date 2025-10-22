@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Borrow • Luxury Car Rental Service{% endblock %}
+{% block nav_borrow %}active{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <h2 class="animated-title">Borrow a Car</h2>
+    <form method="POST">
+      <div class="row">
+        <label style="width:140px">Your Name</label>
+        <input type="text" name="name" required>
+      </div>
+      <div class="row">
+        <label style="width:140px">Choose Car</label>
+        <select name="car" required>
+          {% for car in cars %}
+            <option value="{{ car }}">{{ car }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="row">
+        <button type="submit">Borrow</button>
+        <a href="/" class="btn-secondary" style="text-decoration:none; padding:10px 12px; border-radius:10px;">Back</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}

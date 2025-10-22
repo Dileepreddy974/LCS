@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Donate • Luxury Car Rental Service{% endblock %}
+{% block nav_donate %}active{% endblock %}
+
+{% block content %}
+
+  <div class="container">
+    <div class="card">
+      <h2>Donate a Car</h2>
+      <form method="POST">
+        <div class="row">
+          <label style="width:140px">Your Name</label>
+          <input type="text" name="name" required>
+        </div>
+        <div class="row">
+          <label style="width:140px">Car Name</label>
+          <input type="text" name="car" required>
+        </div>
+        <div class="row">
+          <button type="submit">Donate</button>
+          <a href="/" class="btn-secondary" style="text-decoration:none; padding:10px 12px; border-radius:10px;">Back</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

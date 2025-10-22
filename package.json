@@ -1,0 +1,30 @@
+{
+  "name": "luxury-car-rental-service",
+  "version": "1.0.0",
+  "description": "Luxury Car Rental Service with mobile authentication",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build": "echo 'Build completed'"
+  },
+  "keywords": [
+    "car",
+    "rental",
+    "luxury",
+    "express"
+  ],
+  "author": "Luxury Car Rental Service",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-session": "^1.17.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

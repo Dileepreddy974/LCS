@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block title %}Return • Luxury Car Rental Service{% endblock %}
+{% block nav_return %}active{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <h2>Return a Car</h2>
+    <form method="POST">
+      <div class="row">
+        <label style="width:140px">Your Name</label>
+        <input type="text" name="name" required>
+      </div>
+      <div class="row">
+        <label style="width:140px">Car Name</label>
+        <select name="car" id="returnCarSelect" required>
+          <option value="">Select a borrowed car</option>
+          {% if borrowed_cars %}
+            {% for item in borrowed_cars %}
+              <option value="{{ item.car_name }}" data-borrower="{{ item.borrower_name }}">
+                {{ item.car_name }} (Borrowed by {{ item.borrower_name }})
+              </option>
+            {% endfor %}
+          {% endif %}
+        </select>
+        <div id="returnPreview" class="row" style="align-items:center; gap:10px;">
+          <img id="returnImg" class="car-thumb" alt="Car preview" loading="lazy" style="display:none;" />
+          <span id="returnLabel" class="muted"></span>
+        </div>
+      </div>
+      <div class="row">
+        <button type="submit">Return</button>
+        <a href="/" class="btn-secondary" style="text-decoration:none; padding:10px 12px; border-radius:10px;">Back</a>
+      </div>
+    </form>
+  </div>
+  
+  <!-- Store car images mapping in a hidden div -->
+  <div id="carImagesData" style="display:none;">
+    {% for car, img_url in car_images.items() %}
+      <span data-car="{{ car }}" data-img="{{ img_url }}"></span>
+    {% endfor %}
+  </div>
+{% endblock %}
+
+{% block footer %}
+<script>
+  document.addEventListener('DOMContentLoaded', function(){
+    // Create car images mapping from hidden div
+    const carImagesData = {};
+    const carImagesContainer = document.getElementById('carImagesData');
+    if (carImagesContainer) {
+      const spans = carImagesContainer.querySelectorAll('span');
+      spans.forEach(span => {
+        const car = span.dataset.car;
+        const img = span.dataset.img;
+        if (car && img) {
+          carImagesData[car] = img;
+        }
+      });
+    }
+    
+    const returnCarSelect = document.getElementById('returnCarSelect');
+    if (returnCarSelect) {
+      returnCarSelect.dataset.carImages = JSON.stringify(carImagesData);
+    }
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function(){
+    const select = document.getElementById('returnCarSelect');
+    const img = document.getElementById('returnImg');
+    const label = document.getElementById('returnLabel');
+    
+    if (!select || !img || !label) return;
+    
+    // Get car images mapping from data attribute
+    const mapping = JSON.parse(select.dataset.carImages || '{}');
+    
+    function update(){
+      const selectedOption = select.options[select.selectedIndex];
+      if (!selectedOption.value) {
+        img.style.display = 'none';
+        label.textContent = '';
+        return;
+      }
+      
+      const carName = selectedOption.value;
+      const borrowerName = selectedOption.dataset.borrower;
+      
+      label.textContent = `Preview for: ${carName} (Borrowed by ${borrowerName})`;
+      
+      let src = mapping[carName];
+      if(!src){
+        img.style.display = 'none';
+        return;
+      }
+      img.style.display = '';
+      if(/^https?:\/\//i.test(src)){
+        img.src = src;
+      } else {
+        img.src = "{{ url_for('static', filename='cars/') }}" + src;
+      }
+      img.onerror = function(){ 
+        this.onerror = null; 
+        this.src = "{{ url_for('static', filename='cars/image.png') }}"; 
+      };
+    }
+    
+    select.addEventListener('change', update);
+    update();
+  });
+</script>
+{% endblock %}
