@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Luxury Car Rental (Flask)
 
 A simple Flask web app to browse, borrow, return, donate, and track cars with a modern UI, claymorphism theme, and media-rich visuals.
@@ -88,3 +89,6 @@ The application now includes a complete user authentication system:
 ## Documentation
 
 For complete documentation, see [DOCUMENTATION.md](DOCUMENTATION.md)
+=======
+# LCS
+>>>>>>> 733715440fd184acf3c087d3d236be6b5afed299
