@@ -149,3 +149,52 @@ Thumbs.db
 *.flv
 *.webm
 *.m4v
+
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+.coverage
+.gitignore
+.env
+.venv
+venv/
+env/
+.eggs/
+*.egg-info/
+
+# Database
+*.db
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Test files (we'll remove the test files we created)
+test_*.py
+create_test_user.py
+remove_test_cars.py
+test_form.html
+test_login.py
+test_login_form.html
+test_post_login.py
+
+# Build outputs
+dist/
+build/
+*.egg-info/

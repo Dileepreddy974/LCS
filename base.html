@@ -4,135 +4,57 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Luxury Car Rental Service{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-  <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+  <link rel="stylesheet" href="/styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <style> 
-    body{font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;}
-    .animated-title {
-      animation: fadeInSlideUp 1s ease-out;
-    }
-    @keyframes fadeInSlideUp {
-      0% {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    .brand {
-      animation: fadeIn 1.5s ease-out;
-    }
-    @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
+    body {
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0;
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(59,130,246,0.08), transparent 60%),
+                  radial-gradient(1200px 700px at 80% -20%, rgba(34,211,238,0.08), transparent 60%),
+                  linear-gradient(180deg, #0a0f1c 0%, #0b1220 60%);
+      color: #fff;
+      min-height: 100vh;
     }
     
-    /* User info styles */
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      margin-left: auto;
+    /* Background video layer */
+    .bg-video { position: fixed; inset: 0; z-index: -2; overflow: hidden; }
+    .bg-video-el { position: absolute; left: 50%; top: 50%; min-width: 100%; min-height: 100%; transform: translate(-50%, -50%); filter: blur(10px) saturate(0.9); }
+    .bg-video-overlay { position: absolute; inset: 0; background: radial-gradient(1000px 600px at 20% 0%, rgba(59,130,246,0.12), transparent), radial-gradient(1000px 600px at 80% 0%, rgba(34,211,238,0.12), transparent), rgba(8,12,22,0.60); }
+    
+    /* Navbar */
+    .nav {
+      position: sticky; top: 0; z-index: 10;
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px 20px; background: rgba(8,12,22,0.8);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid #1f2a44;
+      box-shadow: 10px 10px 24px rgba(0,0,0,0.45), -8px -8px 20px rgba(255,255,255,0.05), 0 0 0 1px rgba(122,162,255,0.10) inset;
+      transition: all 0.3s ease;
+    }
+    .brand { 
+      font-weight: 800; 
+      color: #fff; 
+      margin-right: auto; 
+      letter-spacing: 0.5px; 
+      font-size: 1.2rem;
+    }
+    
+    .container {
+      max-width: 1000px; 
+      margin: 20px auto; 
       padding: 0 20px;
     }
     
-    .user-info img {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-    }
-    
-    .user-info .user-initials {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: linear-gradient(145deg, #6a6a6a, #3d3d3d);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 1rem;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-    }
-    
-    .user-dropdown {
-      position: relative;
-    }
-    
-    .user-dropdown-content {
-      display: none;
-      position: absolute;
-      right: 0;
-      background: rgba(30, 30, 30, 0.95);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      min-width: 160px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      z-index: 1;
-      top: 45px;
-    }
-    
-    .user-dropdown-content a {
-      color: white;
-      padding: 12px 16px;
-      text-decoration: none;
-      display: block;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .user-dropdown-content a:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-    
-    .user-dropdown-content a:last-child {
-      border-bottom: none;
-    }
-    
-    .user-dropdown:hover .user-dropdown-content {
-      display: block;
-    }
-    
-    /* Auth buttons styling */
-    .auth-buttons {
-      display: flex;
-      gap: 10px;
-    }
-    
-    .auth-buttons a {
-      text-decoration: none;
-      padding: 8px 15px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      transition: all 0.2s ease;
-    }
-    
-    .login-btn {
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    .login-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-    
-    .register-btn {
-      background: linear-gradient(145deg, #6a6a6a, #3d3d3d);
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    .register-btn:hover {
-      background: linear-gradient(145deg, #7a7a7a, #4d4d4d);
+    .footer { 
+      text-align: center; 
+      color: #ffffff; 
+      padding: 30px 12px; 
+      background: rgba(8,12,22,0.8);
+      border-top: 1px solid #1f2a44;
+      margin-top: 40px;
     }
   </style>
   {% block head %}{% endblock %}
@@ -141,106 +63,22 @@
   <!-- Blurred background video -->
   <div class="bg-video" aria-hidden="true">
     <video class="bg-video-el" autoplay muted loop playsinline>
-      <source src="{{ url_for('static', filename='bg.mp4') }}" type="video/mp4">
+      <source src="/bg.mp4" type="video/mp4">
     </video>
     <div class="bg-video-overlay"></div>
   </div>
 
   <nav class="nav">
-    <div class="brand animated-title">Luxury Car Rental Service</div>
-    <div class="nav-toggle" id="navToggle">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-    <div class="nav-menu" id="navMenu">
-      <div class="nav-items">
-        <a href="/" class="{% block nav_home %}{% endblock %}">Home</a>
-        <a href="/list" class="{% block nav_list %}{% endblock %}">Cars</a>
-        <a href="/borrow" class="{% block nav_borrow %}{% endblock %}">Borrow</a>
-        <a href="/return" class="{% block nav_return %}{% endblock %}">Return</a>
-        <a href="/donate" class="{% block nav_donate %}{% endblock %}">Donate</a>
-        <a href="/track" class="{% block nav_track %}{% endblock %}">Track</a>
-      </div>
-      
-      <!-- User info section -->
-      {% if user %}
-        <div class="user-info">
-          <div class="user-dropdown">
-            {% if user.profile_image %}
-              <img src="{{ url_for('static', filename=user.profile_image) }}" alt="{{ user.name }}">
-            {% else %}
-              <div class="user-initials">{{ user.name[0] }}</div>
-            {% endif %}
-            <div class="user-dropdown-content">
-              <a href="/profile">Profile</a>
-              <a href="/logout">Logout</a>
-            </div>
-          </div>
-        </div>
-      {% else %}
-        <div class="auth-buttons">
-          <a href="/login" class="login-btn">Login</a>
-          <a href="/register" class="register-btn">Register</a>
-        </div>
-      {% endif %}
-    </div>
+    <div class="brand">Luxury Car Rental Service</div>
+    {% block nav %}{% endblock %}
   </nav>
-  <script>
-    // Mobile navigation toggle
-    const navToggle = document.getElementById('navToggle');
-    const navMenu = document.getElementById('navMenu');
-    
-    if (navToggle && navMenu) {
-      navToggle.addEventListener('click', () => {
-        navMenu.classList.toggle('active');
-        // Animate hamburger to X
-        const spans = navToggle.querySelectorAll('span');
-        if (navMenu.classList.contains('active')) {
-          spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
-          spans[1].style.opacity = '0';
-          spans[2].style.transform = 'rotate(-45deg) translate(7px, -6px)';
-        } else {
-          spans[0].style.transform = 'none';
-          spans[1].style.opacity = '1';
-          spans[2].style.transform = 'none';
-        }
-      });
-      
-      // Close menu when clicking outside
-      document.addEventListener('click', (e) => {
-        if (navToggle.contains(e.target) || navMenu.contains(e.target)) return;
-        navMenu.classList.remove('active');
-        const spans = navToggle.querySelectorAll('span');
-        spans[0].style.transform = 'none';
-        spans[1].style.opacity = '1';
-        spans[2].style.transform = 'none';
-      });
-    }
-  </script>
-  </nav>
-
-  <div class="toast-container" id="toastContainer">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="toast {{ category }}" data-toast>{{ message }}</div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
-  </div>
-
-  <!-- Loading Spinner -->
-  <div id="pageSpinner" class="spinner hidden" aria-hidden="true">
-    <div class="spinner-ring"></div>
-  </div>
-
-  {% block hero %}{% endblock %}
 
   <div class="container">
     {% block content %}{% endblock %}
   </div>
 
-  <div class="footer">{% block footer %}Made with ❤️ for fast and fun rides{% endblock %}</div>
+  <div class="footer">
+    {% block footer %}Made with ❤️ for fast and fun rides{% endblock %}
+  </div>
 </body>
 </html>

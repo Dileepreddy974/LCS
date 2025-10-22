@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Health Check - Luxury Car Rental Service</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: radial-gradient(1200px 600px at 20% -10%, rgba(59,130,246,0.08), transparent 60%),
+                        radial-gradient(1200px 700px at 80% -20%, rgba(34,211,238,0.08), transparent 60%),
+                        linear-gradient(180deg, #0a0f1c 0%, #0b1220 60%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            text-align: center;
+            background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.22)), #121a2b;
+            border: 1px solid #1f2a44;
+            border-radius: 18px;
+            padding: 40px;
+            box-shadow: 10px 10px 24px rgba(0,0,0,0.45), -8px -8px 20px rgba(255,255,255,0.05), 0 0 0 1px rgba(122,162,255,0.10) inset;
+            max-width: 600px;
+            width: 90%;
+        }
+        
+        .status-indicator {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.2);
+            border: 3px solid rgba(16, 185, 129, 0.5);
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+        
+        h1 {
+            color: #6ee7b7;
+            margin-bottom: 20px;
+        }
+        
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        
+        .timestamp {
+            margin-top: 20px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="status-indicator">✓</div>
+        <h1>System Status: Operational</h1>
+        <p>The Luxury Car Rental Service is running successfully.</p>
+        <p>All systems are functioning normally.</p>
+        <div class="timestamp">Last checked: <span id="current-time"></span></div>
+    </div>
+    
+    <script>
+        // Update the timestamp
+        document.getElementById('current-time').textContent = new Date().toISOString();
+    </script>
+</body>
+</html>

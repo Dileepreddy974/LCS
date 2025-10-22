@@ -38,8 +38,7 @@ rental = RentalCars([
     "ASTON MARTIN VANTAGE",
     "PORSCHE 911",
     "BMW M3",
-    "AUDI R8",
-    "TESLA MODEL S"
+    "AUDI R8"
 ])
 person = Person()
 
@@ -57,8 +56,7 @@ car_images = {
     "ASTON MARTIN VANTAGE": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/2019_Aston_Martin_Vantage_V8_Automatic_4.0_Front.jpg/640px-2019_Aston_Martin_Vantage_V8_Automatic_4.0_Front.jpg",
     "PORSCHE 911": "PORSCHE 911.jpeg",
     "BMW M3": "BMW M3.jpeg",
-    "AUDI R8": "AUDI R8.jpeg",
-    "TESLA MODEL S": "TESLA MODEL S.jpeg",
+    "AUDI R8": "AUDI R8.jpeg"
     # Unmapped names will fall back to image.png automatically
 }
 
@@ -190,27 +188,42 @@ def track_cars():
 # User login route
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    print(f"Login route accessed with method: {request.method}")
     if request.method == 'POST':
-        email = request.form['email']
-        
-        # Find user by email
-        from db_manager import DatabaseManager
-        db_manager = DatabaseManager()
         try:
-            user = db_manager.get_user_by_email(email)
-            if user:
-                # Store user ID in session
-                session['user_id'] = user.id
-                flash(f"Welcome back, {user.name}!", 'success')
-                return redirect('/')
-            else:
-                flash('No account found with that email. Please register.', 'error')
-                return redirect('/register')
+            print("Processing POST request")
+            email = request.form['email']
+            print(f"Email from form: {email}")
+            
+            # Find user by email
+            from db_manager import DatabaseManager
+            db_manager = DatabaseManager()
+            try:
+                print("Attempting to get user by email")
+                user = db_manager.get_user_by_email(email)
+                print(f"User lookup result: {user}")
+                if user:
+                    # Store user ID in session
+                    session['user_id'] = user.id
+                    print(f"User ID {user.id} stored in session")
+                    flash(f"Welcome back, {user.name}!", 'success')
+                    return redirect('/')
+                else:
+                    flash('No account found with that email. Please register.', 'error')
+                    return redirect('/register')
+            except Exception as e:
+                print(f"Database error: {str(e)}")
+                flash(f"Error logging in: {str(e)}", 'error')
+                return redirect('/login')
+            finally:
+                db_manager.close()
         except Exception as e:
-            flash(f"Error logging in: {str(e)}", 'error')
+            # Log the exception for debugging
+            print(f"Exception in login POST: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            flash(f"Error processing login: {str(e)}", 'error')
             return redirect('/login')
-        finally:
-            db_manager.close()
     
     # Get current user if logged in
     user = None

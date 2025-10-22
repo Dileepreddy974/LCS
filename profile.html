@@ -3,7 +3,7 @@
 
 {% block content %}
   <div class="profile-container">
-    <div class="profile-card">
+    <div class="card profile-card">
       <h2 class="animated-title">Your Profile</h2>
       
       <div class="profile-header">
@@ -38,14 +38,14 @@
     }
     
     .profile-card {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
+      background: linear-gradient(180deg, var(--clay-grad-top), var(--clay-grad-bot)), var(--clay-bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
       padding: 30px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: var(--clay-shadow), var(--clay-highlight), var(--clay-outline);
       width: 100%;
       max-width: 500px;
+      backdrop-filter: blur(8px);
     }
     
     .profile-header {
@@ -80,12 +80,12 @@
     .profile-info h3 {
       margin: 0 0 10px 0;
       font-size: 1.5rem;
-      color: #333;
+      color: #fff;
     }
     
     .profile-info p {
       margin: 5px 0;
-      color: #666;
+      color: #fff;
     }
     
     .profile-actions {
@@ -98,7 +98,7 @@
       flex: 1;
       padding: 12px 20px;
       border: none;
-      border-radius: 10px;
+      border-radius: 14px;
       font-size: 16px;
       font-weight: 500;
       cursor: pointer;
@@ -106,26 +106,28 @@
       transition: all 0.3s ease;
       text-decoration: none;
       min-width: 120px;
+      box-shadow: var(--clay-shadow), var(--clay-highlight);
     }
     
     .btn-secondary {
-      background: linear-gradient(145deg, #6a6a6a, #3d3d3d);
+      background: #1e293b;
+      border: 1px solid var(--border-strong);
       color: white;
     }
     
     .btn-secondary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(106, 106, 106, 0.3);
+      box-shadow: 0 0 0 1px rgba(122,162,255,0.2) inset, 0 6px 16px rgba(0,0,0,0.35);
+      transform: translateY(-1px);
     }
     
     .btn-outline {
       background: transparent;
-      color: #666;
-      border: 1px solid rgba(0, 0, 0, 0.1);
+      color: #fff;
+      border: 1px solid var(--border);
     }
     
     .btn-outline:hover {
-      background: rgba(0, 0, 0, 0.03);
+      background: rgba(255, 255, 255, 0.05);
     }
   </style>
 {% endblock %}
